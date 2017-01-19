@@ -1,6 +1,6 @@
 {
   "name": "node-bits-internal-database",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Provides the shared logic to assist in creating a node-bits compliant database bit",
   "main": "lib/index.js",
   "scripts": {
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/jgretz/node-bits-internal-database#readme",
   "dependencies": {
+    "class-autobind": "^0.1.4",
     "lodash": "^4.17.2",
     "node-bits": "^0.0.11"
   },
