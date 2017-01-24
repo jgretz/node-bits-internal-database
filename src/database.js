@@ -14,25 +14,34 @@ export class Database {
 
   // connect / disconnect
   connect() {
-    this.implementation.connect(this.config.connection);
+    this.implementation.connect(this.config);
   }
 
   // schema management
-  synchronizeSchema(schema, relationships) {
-    this.schema = schema;
-    this.relationships = relationships;
+  synchronizeSchema(schema, relationships, indexes) {
+    this.db = { schema, relationships, indexes };
 
     // class scope variables
     this.models = {};
-    this.execute = execute(this.schema, this.config.hooks, this.getModel);
+    this.execute = execute(this.db.schema, this.config.hooks, this.getModel);
 
-    // update the objects
-    const keys = _.keys(this.schema);
+    // give the implementation its first crack at the schema definition
+    const adjDb = this.implementation.beforeSynchronizeSchema(this.config, this.db);
+    if (adjDb) {
+      this.db = adjDb;
+    }
+
+    // update the individual objects
+    const keys = _.keys(this.db.schema);
     _.forEach(keys, (key) => {
-      this.updateSchema(key, this.schema[key]);
+      this.updateSchema(key, this.db.schema[key]);
     });
 
-    this.implementation.afterSynchronizeSchema(this.config.forceSync);
+    this.implementation.defineRelationships(this.config, this.models, this.db);
+    this.implementation.defineIndexes(this.config, this.models, this.db);
+
+    // allow the implementation to do any final calls / clean up
+    this.implementation.afterSynchronizeSchema(this.config, this.models, this.db);
   }
 
   updateSchema(name, schema) {
