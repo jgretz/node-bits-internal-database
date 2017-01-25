@@ -38,7 +38,6 @@ export class Database {
     });
 
     this.implementation.defineRelationships(this.config, this.models, this.db);
-    this.implementation.defineIndexes(this.config, this.models, this.db);
 
     // allow the implementation to do any final calls / clean up
     this.implementation.afterSynchronizeSchema(this.config, this.models, this.db);
@@ -47,7 +46,7 @@ export class Database {
   updateSchema(name, schema) {
     this.removeSchema(name);
 
-    this.models[name] = this.implementation.updateSchema(name, schema);
+    this.models[name] = this.implementation.updateSchema(name, schema, this.db);
   }
 
   removeSchema(name) {
