@@ -17,6 +17,10 @@ export class Database {
     this.implementation.connect(this.config);
   }
 
+  rawConnection() {
+    return this.implementation.rawConnection();
+  }
+
   // schema management
   synchronizeSchema(db) {
     this.db = db;
