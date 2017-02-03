@@ -18,8 +18,8 @@ export class Database {
   }
 
   // schema management
-  synchronizeSchema(schema, relationships, indexes) {
-    this.db = { schema, relationships, indexes };
+  synchronizeSchema(db) {
+    this.db = db;
 
     // class scope variables
     this.models = {};
