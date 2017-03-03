@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { QUERY, INSERT, UPDATE, DELETE } from 'node-bits';
+import {QUERY, INSERT, UPDATE, DELETE} from 'node-bits';
 import autobind from 'class-autobind';
 
 import execute from './execute';
@@ -37,7 +37,7 @@ export class Database {
 
     // update the individual objects
     const keys = _.keys(this.db.schema);
-    _.forEach(keys, (key) => {
+    _.forEach(keys, key => {
       this.updateSchema(key, this.db.schema[key]);
     });
 
@@ -70,22 +70,22 @@ export class Database {
 
   // CRUD
   findById(name, id) {
-    return this.execute(name, QUERY, { id }, this.implementation.findById);
+    return this.execute(name, QUERY, {id}, this.implementation.findById);
   }
 
   find(name, query) {
-    return this.execute(name, QUERY, { query }, this.implementation.find);
+    return this.execute(name, QUERY, {query}, this.implementation.find);
   }
 
   create(name, data) {
-    return this.execute(name, INSERT, { data }, this.implementation.create);
+    return this.execute(name, INSERT, {data}, this.implementation.create);
   }
 
   update(name, id, data) {
-    return this.execute(name, UPDATE, { id, data }, this.implementation.update);
+    return this.execute(name, UPDATE, {id, data}, this.implementation.update);
   }
 
   delete(name, id) {
-    return this.execute(name, DELETE, { id }, this.implementation.delete);
+    return this.execute(name, DELETE, {id}, this.implementation.delete);
   }
 }
