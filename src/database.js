@@ -77,6 +77,10 @@ export class Database {
     return this.execute(name, QUERY, {query}, this.implementation.find);
   }
 
+  odataQuery(name, query) {
+    return this.execute(name, QUERY, {query}, this.implementation.odataQuery);
+  }
+
   create(name, data) {
     return this.execute(name, INSERT, {data}, this.implementation.create);
   }
