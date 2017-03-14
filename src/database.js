@@ -4,6 +4,8 @@ import autobind from 'class-autobind';
 
 import execute from './execute';
 
+const FIND_OPTIONS = ['includeMetaData', 'start', 'max', 'where', 'select', 'orderby'];
+
 export class Database {
   constructor(config, implementation) {
     autobind(this);
@@ -74,7 +76,13 @@ export class Database {
   }
 
   find(name, options) {
-    return this.execute(name, QUERY, options || {}, this.implementation.find);
+    // this is here for backwards compatibility when find just accepted a query
+    let ops = options;
+    if (options && !_.some(_.keys(options), x => FIND_OPTIONS.includes(x))) {
+      ops = {where: options};
+    }
+
+    return this.execute(name, QUERY, ops || {}, this.implementation.find);
   }
 
   create(name, data) {
