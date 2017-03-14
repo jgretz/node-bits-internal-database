@@ -1,6 +1,6 @@
 {
   "name": "node-bits-internal-database",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Provides the shared logic to assist in creating a node-bits compliant database bit",
   "main": "lib/index.js",
   "scripts": {

@@ -73,8 +73,8 @@ export class Database {
     return this.execute(name, QUERY, {id}, this.implementation.findById);
   }
 
-  find(name, query) {
-    return this.execute(name, QUERY, {query}, this.implementation.find);
+  find(name, options) {
+    return this.execute(name, QUERY, options || {}, this.implementation.find);
   }
 
   create(name, data) {
