@@ -79,17 +79,17 @@ export class Database {
     // this is here for backwards compatibility when find just accepted a query
     let ops = options;
     if (options && !_.some(_.keys(options), x => FIND_OPTIONS.includes(x))) {
-      ops = {where: options};
-    }
+      ops = {backwardsQuery: options};
+    } else {
+      if (ops.skip) {
+        ops.start = ops.skip;
+        delete ops.skip;
+      }
 
-    if (ops.skip) {
-      ops.start = ops.skip;
-      delete ops.skip;
-    }
-
-    if (ops.limit) {
-      ops.max = ops.limit;
-      delete ops.limit;
+      if (ops.limit) {
+        ops.max = ops.limit;
+        delete ops.limit;
+      }
     }
 
     return this.execute(name, QUERY, ops || {}, this.implementation.find);
