@@ -11,14 +11,19 @@ export default (schema, hooks, model) => {
     }, args);
 
   return (name, action, args, logic) => {
-    const meta = {name, action, schema: schema[name]};
+    // validate that the model requested exists
+    const dbModel = model(name);
+    if (!dbModel) {
+      throw new Error(`No model named '${name}' has been defined.`);
+    }
 
     // It goes logically :) - BEFORE hooks, call, AFTER hooks
+    const meta = {name, action, schema: schema[name]};
     return new Promise((resolve, reject) => {
       try {
         const resolvedArgs = callHooks(BEFORE, args, meta);
 
-        logic(model(name), resolvedArgs)
+        logic(dbModel, resolvedArgs)
           .then(result => {
             const resolvedResponse = callHooks(AFTER, {result}, meta);
 
