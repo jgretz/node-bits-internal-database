@@ -4,7 +4,7 @@ import autobind from 'class-autobind';
 
 import execute from './execute';
 
-const FIND_OPTIONS = ['includeMetaData', 'start', 'max', 'where', 'select', 'orderby'];
+const FIND_OPTIONS = ['includeMetaData', 'start', 'max', 'where', 'select', 'orderby', 'skip', 'limit'];
 
 export class Database {
   constructor(config, implementation) {
@@ -80,6 +80,16 @@ export class Database {
     let ops = options;
     if (options && !_.some(_.keys(options), x => FIND_OPTIONS.includes(x))) {
       ops = {where: options};
+    }
+
+    if (ops.skip) {
+      ops.start = ops.skip;
+      delete ops.skip;
+    }
+
+    if (ops.limit) {
+      ops.max = ops.limit;
+      delete ops.limit;
     }
 
     return this.execute(name, QUERY, ops || {}, this.implementation.find);
