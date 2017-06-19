@@ -6,6 +6,29 @@ import execute from './execute';
 
 const FIND_OPTIONS = ['includeMetaData', 'start', 'max', 'where', 'select', 'orderby', 'skip', 'limit'];
 
+const cleanOptions = options => {
+  if (!options) {
+    return {};
+  }
+
+  if (options && !_.some(_.keys(options), x => FIND_OPTIONS.includes(x))) {
+    // this is here for backwards compatibility when find just accepted a query
+    return {backwardsQuery: options};
+  }
+
+  if (options.skip) {
+    options.start = options.skip;
+    delete options.skip;
+  }
+
+  if (options.limit) {
+    options.max = options.limit;
+    delete options.limit;
+  }
+
+  return options;
+};
+
 export class Database {
   constructor(config, implementation) {
     autobind(this);
@@ -76,31 +99,15 @@ export class Database {
   }
 
   find(name, options) {
-    // this is here for backwards compatibility when find just accepted a query
-    let ops = options;
-    if (options && !_.some(_.keys(options), x => FIND_OPTIONS.includes(x))) {
-      ops = {backwardsQuery: options};
-    } else {
-      if (ops.skip) {
-        ops.start = ops.skip;
-        delete ops.skip;
-      }
-
-      if (ops.limit) {
-        ops.max = ops.limit;
-        delete ops.limit;
-      }
-    }
-
-    return this.execute(name, QUERY, ops || {}, this.implementation.find);
+    return this.execute(name, QUERY, cleanOptions(options), this.implementation.find);
   }
 
-  create(name, data) {
-    return this.execute(name, INSERT, {data}, this.implementation.create);
+  create(name, data, options) {
+    return this.execute(name, INSERT, {data, options: cleanOptions(options)}, this.implementation.create);
   }
 
-  update(name, id, data) {
-    return this.execute(name, UPDATE, {id, data}, this.implementation.update);
+  update(name, id, data, options) {
+    return this.execute(name, UPDATE, {id, data, options: cleanOptions(options)}, this.implementation.update);
   }
 
   delete(name, id) {
